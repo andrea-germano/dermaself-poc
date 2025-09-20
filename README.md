@@ -50,7 +50,7 @@ pip install "git+https://github.com/facebookresearch/pytorch3d.git@stable"
 ### 5) Assets & weights
 Download the files required by 3DDFA‑V3 into `ddfa_v3/assets/` (models, landmark indices, etc.).
 - For **Step 3 – Anonymization** you need **`face_model.npy` (or `.npz`)** with the key **`'u'`** (mean face coordinates).
-- See `ddfa_v3/assets/README.md` for links to the weights.
+- See `ddfa_v3/assets/README.md` for links to the weights and to obtain more information on what you need.
 
 ---
 
@@ -190,6 +190,11 @@ python renderer.py \
 - Use `--stop_on_error` to stop at the first error.
 
 > On macOS/Apple Silicon, **PyTorch3D** does not provide GPU (MPS) support; CPU‑only works but is slower. Alternatively, import the `.obj` + **texture** from Step 3 into a DCC (e.g., Blender) and render there.
+
+---
+
+## Notes
+For backward compatibility, there is a legacy/ folder containing the historical pipeline (Phase 2 + three Phase 3 variants). It’s not required for the main flow and is intended for reproducing older experiments; see legacy/README.md for detailed instructions.
 
 ---
 
