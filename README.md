@@ -23,7 +23,7 @@ conda activate DDFAV3-anon
 
 # PyTorch (versione testata)
 pip install torch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1
-# In alternativa (Windows/Linux specifica): vedi tabella su pytorch.org
+# In alternativa (Windows/Linux CUDA specifica): vedi tabella su pytorch.org
 ```
 
 ### 2) Dipendenze Python
@@ -78,6 +78,7 @@ Esempio (CPU):
 python face_3d.py \
   --inputpath input/ \
   --savepath out/face3d \
+  --device cpu \
   --iscrop 1 \
   --detector retinaface \
   --ldm68 1 --ldm106 1 --ldm106_2d 1 --ldm134 1 \
@@ -93,7 +94,7 @@ python face_3d.py \
     - `v2d_full` (per Step 3).
 - **Detector**: `retinaface` (default) o `mtcnn`. Con immagini già allineate 224×224, puoi usare `--iscrop 0`.
 
-> La modalità con CUDA offerta dal modello 3ddfav3 non è supportata al momento, il rendering viene fatto unicamente su cpu
+> Se usi GPU per il **modello** (non per il renderer): imposta `--device cuda` (richiede PyTorch con CUDA).
 
 ---
 
@@ -155,39 +156,41 @@ python anonymization.py \
 
 ---
 
-### Step 4 — Renderer (PNG dal modello anonimo)
+
+### Step 4 — Renderer (PNG dal modello anonimo) — **ora via CLI**
 Script: `renderer.py` (usa **pytorch3d**).
 
-1) Apri `renderer.py` e imposta:
-```python
-OBJ_PATH = "out/anon/<stem>/<stem>.obj"  # path ad un .obj dello step 3
-OUT_PATH = "out/render/<stem>_front.png" # dove salvare l’immagine
-IMG_SIZE = 1024                          # lato in pixel
-MARGIN   = 0.95                          # quanta parte dell’inquadratura riempire
-BG_WHITE = False                         # True => sfondo bianco, False => PNG RGBA
-```
-2) Lancia:
+> È il passo più pesante. Puoi renderizzare **un singolo .obj** oppure **tutte le sottocartelle** di `--in_root` (come gli altri step).
+
+**A) Singolo file .obj**
 ```bash
-python renderer.py
+python renderer.py \
+  --obj out/anon/edo/edo.obj \
+  --out out/render/edo_front.png \
+  --img_size 1024 \
+  --margin 0.95 \
+  --bg_white 0 \
+  --device cpu
 ```
-- La camera è **ortografica frontale** con auto‑fit.
-- L’output è un **PNG RGBA** (alpha binario > 0.5), pronto per compositing.
+- `--bg_white 1` salva un **RGB** compositato su bianco. Con `0` ottieni **PNG RGBA**.
+- `--margin` (0..1) definisce quanto la mesh riempie il frame.
+- `--alpha_thresh` (default 0.5) controlla il “taglio” dei bordi nell’alpha.
 
-> Se non vuoi installare pytorch3d, salta questo step: lo **.obj** e la **texture** dello Step 3 sono già utilizzabili in DCC/engine esterni.
+**B) Batch su tutte le sottocartelle**
+```bash
+python renderer.py \
+  --in_root out/anon \
+  --out_root out/render \
+  --img_size 1024 \
+  --margin 0.95 \
+  --bg_white 0 \
+  --device cpu
+```
+- Per ogni sottocartella in `out/anon`, lo script cerca **`<subdir>/<subdir>.obj`**; se non lo trova, usa **il primo `.obj`** trovato nella cartella.
+- Output salvato come `out/render/<subdir>_front.png`.
+- Usa `--stop_on_error` per fermare al primo errore.
 
----
-
-## Suggerimenti & Troubleshooting
-
-- **`ModuleNotFoundError: Cython`**: installa `cython` nell’ambiente e ricompila lo step 3 (`setup.py build_ext -i`).
-- **Compilazione C/C++ su Windows**: installa i *Microsoft C++ Build Tools* (MSVC 14.x) e il *Windows 10/11 SDK*.
-- **`FileNotFoundError: ./assets/face_model.npy`**: aggiorna i path per cercare in `ddfa_v3/assets/`.
-- **TorchVision warning `pretrained` deprecato**: usa `weights=...` se modifichi i backbone (non blocca l’esecuzione).
-- **`*_projections.npz` mancante**: ripeti lo Step 1 con `--seg_visible 1 --extractTex 1`.
-- **Mismatch dimensioni immagine/segmentazione**: Step 2 richiede la **stessa risoluzione** dell’immagine usata nello Step 1 (stesso `<stem>`).
-
----
+> Su macOS/Apple Silicon il supporto GPU di **pytorch3d** non è disponibile; CPU-only funziona ma è più lento. In alternativa, importa `.obj` e **texture** dello Step 3 in un DCC (es. Blender) e renderizza lì.
 
 ## Licenze e crediti
-- Ricostruzione 3D basata su **3DDFA‑V3** (accademico). Questa repo integra componenti per l’anonimizzazione e tool di rendering.
-- Verifica le licenze dei pacchetti terzi (PyTorch, OpenCV, pytorch3d, ecc.) prima di uso commerciale.
+- Ricostruzione 3D basata su **3DDFA‑V3** (ad uso accademico). Questa repo integra componenti per l’anonimizzazione e tool di rendering.
