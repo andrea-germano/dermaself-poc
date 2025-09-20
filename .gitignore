@@ -1,6 +1,9 @@
 #custom edits below
 results/
-ddfa_v3/assets
+/ddfa_v3/assets/**
+!/ddfa_v3/assets/
+!/ddfa_v3/assets/README.md
+
 
 
 
