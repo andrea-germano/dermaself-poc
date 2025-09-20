@@ -342,58 +342,58 @@ class LargeModelInfer:
             return final_maps, roi_bboxs
         
 
-    def fat_face(self,img, degree= 0.1):
-        t1 = time.time()
+    # def fat_face(self,img, degree= 0.1):
+    #     t1 = time.time()
 
-        _img, scale = resize_on_long_side(img, 400)
+    #     _img, scale = resize_on_long_side(img, 400)
 
-        contour_maps, boxes = self.find_face_contour(_img)
+    #     contour_maps, boxes = self.find_face_contour(_img)
 
-        # print('|' * 50, 'time find_face_contour: {}'.format(time.time() - t1))
-        # cv2.imwrite(f'all_joint.jpg', np.column_stack(contour_maps))
+    #     # print('|' * 50, 'time find_face_contour: {}'.format(time.time() - t1))
+    #     # cv2.imwrite(f'all_joint.jpg', np.column_stack(contour_maps))
 
-        contour_map = contour_maps[0]
+    #     contour_map = contour_maps[0]
 
-        boxes = boxes[0]
+    #     boxes = boxes[0]
 
-        Flow = np.zeros(shape=(contour_map.shape[0], contour_map.shape[1], 2), dtype=np.float32)
+    #     Flow = np.zeros(shape=(contour_map.shape[0], contour_map.shape[1], 2), dtype=np.float32)
 
-        # cv2.rectangle(bgr,[boxes['x1'], boxes['y1']], [boxes['x2'], boxes['y2']],(0,0,255) )
+    #     # cv2.rectangle(bgr,[boxes['x1'], boxes['y1']], [boxes['x2'], boxes['y2']],(0,0,255) )
 
-        box_center = [(boxes['x1'] + boxes['x2']) / 2, (boxes['y1'] + boxes['y2']) / 2]
+    #     box_center = [(boxes['x1'] + boxes['x2']) / 2, (boxes['y1'] + boxes['y2']) / 2]
 
-        box_length = max(abs(boxes['y1'] - boxes['y2']), abs(boxes['x1'] - boxes['x2']))
+    #     box_length = max(abs(boxes['y1'] - boxes['y2']), abs(boxes['x1'] - boxes['x2']))
 
-        flow_box_length = min(box_length * 2, 2 * (box_center[0] - 1), 2 * (box_center[1] - 1),
-                              2 * (Flow.shape[0] - box_center[1] - 1), 2 * (Flow.shape[1] - box_center[0] - 1))
-        flow_box_length = int(flow_box_length)
+    #     flow_box_length = min(box_length * 2, 2 * (box_center[0] - 1), 2 * (box_center[1] - 1),
+    #                           2 * (Flow.shape[0] - box_center[1] - 1), 2 * (Flow.shape[1] - box_center[0] - 1))
+    #     flow_box_length = int(flow_box_length)
 
-        # print('flow_box_length:{}'.format(flow_box_length))
-        # print('box_center:{}'.format(box_center))
-        t1 =time.time()
+    #     # print('flow_box_length:{}'.format(flow_box_length))
+    #     # print('box_center:{}'.format(box_center))
+    #     t1 =time.time()
 
-        sf = spread_flow(100, flow_box_length * degree)
-        sf = cv2.resize(sf, (flow_box_length, flow_box_length))
-        # print('|' * 50, 'time spread_flow: {}'.format(time.time() - t1))
+    #     sf = spread_flow(100, flow_box_length * degree)
+    #     sf = cv2.resize(sf, (flow_box_length, flow_box_length))
+    #     # print('|' * 50, 'time spread_flow: {}'.format(time.time() - t1))
 
-        t1 = time.time()
-        Flow[int(box_center[1] - flow_box_length / 2):int(box_center[1] + flow_box_length / 2),
-        int(box_center[0] - flow_box_length / 2):int(box_center[0] + flow_box_length / 2)] = sf
+    #     t1 = time.time()
+    #     Flow[int(box_center[1] - flow_box_length / 2):int(box_center[1] + flow_box_length / 2),
+    #     int(box_center[0] - flow_box_length / 2):int(box_center[0] + flow_box_length / 2)] = sf
 
-        Flow = Flow * np.dstack((contour_map, contour_map)) / 255.0
+    #     Flow = Flow * np.dstack((contour_map, contour_map)) / 255.0
 
-        inter_face_maps = contour_maps[-1]
+    #     inter_face_maps = contour_maps[-1]
 
-        Flow = Flow * (1.0 - np.dstack((inter_face_maps, inter_face_maps)) / 255.0)
+    #     Flow = Flow * (1.0 - np.dstack((inter_face_maps, inter_face_maps)) / 255.0)
 
-        Flow = cv2.resize(Flow,(img.shape[1], img.shape[0]) )
+    #     Flow = cv2.resize(Flow,(img.shape[1], img.shape[0]) )
 
-        Flow = Flow /scale
-        # print('|' * 50, 'time flow process: {}'.format(time.time() - t1))
+    #     Flow = Flow /scale
+    #     # print('|' * 50, 'time flow process: {}'.format(time.time() - t1))
 
-        t1 = time.time()
-        pred, top_bound, bottom_bound, left_bound, right_bound = image_warp_grid1(Flow[..., 0], Flow[..., 1], img, 1.0,
-                                                                                  [0, 0, 0, 0])
+    #     t1 = time.time()
+    #     pred, top_bound, bottom_bound, left_bound, right_bound = image_warp_grid1(Flow[..., 0], Flow[..., 1], img, 1.0,
+    #                                                                               [0, 0, 0, 0])
 
-        # print('|' * 50, 'time image_warp_grid1: {}'.format(time.time() - t1))
-        return pred
+    #     # print('|' * 50, 'time image_warp_grid1: {}'.format(time.time() - t1))
+    #     return pred

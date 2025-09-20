@@ -1,6 +1,6 @@
+import sys
 import numpy as np
 import torch
-import os
 import cv2
 import torch.nn.functional as F
 # from util.nv_diffrast import MeshRenderer, MeshRenderer_UV
@@ -104,10 +104,9 @@ class face_model:
                 )
                 self.uv_coords_torch = self.uv_coords_torch + 1e-6 # For CPU renderer, a slight perturbation may be needed to avoid certain rendering artifacts. Users can comment out 1e-6 to compare different texture effects.
             else:
-                from util.nv_diffrast import MeshRenderer_UV
-                self.uv_renderer = MeshRenderer_UV(
-                        rasterize_size=int(self.uv_size)
-                )
+                print("ERRORE: GPU non supportato. nvdiffrast non disponibile: usa il renderer CPU.",
+                file=sys.stderr)
+                sys.exit(1)
             self.uv_coords_numpy = uv_coords_numpy.copy()
             self.uv_coords_numpy[:,1] = self.uv_size - self.uv_coords_numpy[:,1] - 1
 
@@ -149,10 +148,9 @@ class face_model:
                         rasterize_fov=2 * np.arctan(112. / 1015) * 180 / np.pi, znear=5., zfar=15., rasterize_size=int(2 * 112.)
             )
         else:
-            from util.nv_diffrast import MeshRenderer
-            self.renderer = MeshRenderer(
-                        rasterize_fov=2 * np.arctan(112. / 1015) * 180 / np.pi, znear=5., zfar=15., rasterize_size=int(2 * 112.)
-            )
+            print("ERRORE: GPU non supportato. nvdiffrast non disponibile: usa il renderer CPU.",
+                file=sys.stderr)
+            sys.exit(1)
 
         if args.backbone == 'resnet50':
             self.net_recon = networks.define_net_recon(
