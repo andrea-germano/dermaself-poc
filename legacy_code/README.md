@@ -31,13 +31,13 @@ Use this when you need the older, more granular flow or to reproduce past experi
 
 **CLI**
 ```bash
-python fase2_segm.py \
-  --input_root examples/results \
-  --assets_dir assets \
-  --out_root stage3_bundles \
-  --images_root path/to/original_images \
-  --trans_params_root path/to/trans_params_npy_root \
-  --uv_size 0 \
+python fase2_segm.py `
+  --input_root examples/results `
+  --assets_dir assets `
+  --out_root stage3_bundles `
+  --images_root path/to/original_images `
+  --trans_params_root path/to/trans_params_npy_root `
+  --uv_size 0 `
   --flip_v 0
 ```
 - `--input_root` root with the per‑image subfolders produced by Step‑1.
@@ -60,15 +60,15 @@ All Phase‑3 scripts read **Phase‑2 bundles** from `--bundles_dir` and write 
 
 **CLI**
 ```bash
-python fase3_arap_sempl.py \
-  --bundles_dir stage3_bundles \
-  --out_dir stage3_morphed_slim \
-  --strength 1.0 \
-  --focus 1.8 \
-  --rebake_res 4096 \
-  --sharpen 1 \
-  --eye_black 1 \
-  --eye_dark_value 0 \
+python fase3_arap_sempl.py `
+  --bundles_dir stage3_bundles `
+  --out_dir stage3_morphed_slim `
+  --strength 1.0 `
+  --focus 1.8 `
+  --rebake_res 4096 `
+  --sharpen 1 `
+  --eye_black 1 `
+  --eye_dark_value 0 `
   --flip_v 0
 ```
 **Outputs**
@@ -84,15 +84,15 @@ python fase3_arap_sempl.py \
 
 **CLI**
 ```bash
-python fase3_arap_v5.py \
-  --bundles_dir stage3_bundles \
-  --out_dir stage3_morphed \
-  --beta_local 0.90 --beta_global 0.35 \
-  --t_low 0.10 --t_high 0.85 \
-  --mouth_gain 1.50 --eyes_gain 1.25 --nose_gain 1.15 --brows_gain 1.00 \
-  --focus_power 1.8 --global_inside 0.55 --global_outside 0.12 \
-  --solver arap --arap_w 45.0 --arap_iters 10 \
-  --smooth_disp_alpha 0.12 --auto_strength 1 --anon_ratio 0.085 \
+python fase3_arap_v5.py `
+  --bundles_dir stage3_bundles `
+  --out_dir stage3_morphed `
+  --beta_local 0.90 --beta_global 0.35 `
+  --t_low 0.10 --t_high 0.85 `
+  --mouth_gain 1.50 --eyes_gain 1.25 --nose_gain 1.15 --brows_gain 1.00 `
+  --focus_power 1.8 --global_inside 0.55 --global_outside 0.12 `
+  --solver arap --arap_w 45.0 --arap_iters 10 `
+  --smooth_disp_alpha 0.12 --auto_strength 1 --anon_ratio 0.085 `
   --rebake 1 --rebake_uv_res 2048 --sharpen 1 --eye_black 1 --flip_v 0
 ```
 **Outputs**
@@ -108,13 +108,13 @@ python fase3_arap_v5.py \
 
 **CLI**
 ```bash
-python fase3_ffd.py \
-  --bundles_dir stage3_bundles \
-  --out_dir stage3_morphed \
-  --strength 1.2 --class_var 0.7 --asym 0.3 \
-  --grid 9x11x9 --seed 0 \
-  --uv_res 3072 --flip_v 0 \
-  --w_eyes 1.0 --w_nose 1.0 --w_mouth 1.0 \
+python fase3_ffd.py `
+  --bundles_dir stage3_bundles `
+  --out_dir stage3_morphed `
+  --strength 1.2 --class_var 0.7 --asym 0.3 `
+  --grid 9x11x9 --seed 0 `
+  --uv_res 3072 --flip_v 0 `
+  --w_eyes 1.0 --w_nose 1.0 --w_mouth 1.0 `
   --w_temples 0.30 --w_cheeks 0.10 --w_chin 0.10 --w_face 0.00
 ```
 
@@ -123,12 +123,12 @@ python fase3_ffd.py \
 ## Typical end‑to‑end (legacy)
 1) **Build bundles** from 3DDFA‑V3 outputs:
 ```bash
-python fase2_segm.py --input_root examples/results --assets_dir assets --out_root stage3_bundles \
+python fase2_segm.py --input_root examples/results --assets_dir assets --out_root stage3_bundles `
   --images_root data/images --uv_size 0 --flip_v 0
 ```
 2) **Choose ONE Phase‑3 variant**, e.g., SLIM:
 ```bash
-python fase3_arap_sempl.py --bundles_dir stage3_bundles --out_dir stage3_morphed_slim \
+python fase3_arap_sempl.py --bundles_dir stage3_bundles --out_dir stage3_morphed_slim `
   --strength 1.0 --focus 1.8 --rebake_res 4096 --sharpen 1 --eye_black 1
 ```
 (or run the ARAP v5 / FFD commands above.)
@@ -145,10 +145,10 @@ python fase3_arap_sempl.py --bundles_dir stage3_bundles --out_dir stage3_morphed
 ## Related utilities (optional)
 - `segmentation.py`: creates RGBA cutouts removing eyes (and optionally mouth) guided by `seg_visible_labels_full` maps, with feathering/inpaint.
 ```bash
-python segmentation.py \
-  --in_root <3ddfa_results_root> \
-  --out_root <out_png_root> \
-  --images_root <original_images_root> \
+python segmentation.py `
+  --in_root <3ddfa_results_root> `
+  --out_root <out_png_root> `
+  --images_root <original_images_root> `
   --remove_mouth 1 --margin_px 0 --feather_px 1.0
 ```
 Outputs a single `<stem>_masked.png` per subfolder.

@@ -3,8 +3,10 @@
 !/ddfa_v3/assets/
 !/ddfa_v3/assets/README.md
 
-
-
+/out/** 
+!/out/            
+!/out/face3d/      
+!/out/face3d/**    
 
 
 

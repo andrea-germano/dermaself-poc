@@ -75,15 +75,15 @@ Script: `face_3d.py`
 
 Example (CPU):
 ```bash
-python face_3d.py \
-  --inputpath input/ \
-  --savepath out/face3d \
-  --device cpu \
-  --iscrop 1 \
-  --detector retinaface \
-  --ldm68 1 --ldm106 1 --ldm106_2d 1 --ldm134 1 \
-  --seg_visible 1 --seg 1 \
-  --useTex 0 --extractTex 1 \
+python face_3d.py `
+  --inputpath input/ `
+  --savepath out/face3d `
+  --device cpu `
+  --iscrop 1 `
+  --detector retinaface `
+  --ldm68 1 --ldm106 1 --ldm106_2d 1 --ldm134 1 `
+  --seg_visible 1 --seg 1 `
+  --useTex 0 --extractTex 1 `
   --backbone resnet50
 ```
 - **Input**: folder with images (`--inputpath`).  
@@ -103,12 +103,12 @@ Script: `segmentation.py`
 
 Example:
 ```bash
-python segmentation.py \
-  --in_root out/face3d \
-  --images_root input \
-  --out_root out/seg \
-  --remove_mouth 1 \
-  --margin_px 6 \
+python segmentation.py `
+  --in_root out/face3d `
+  --images_root input `
+  --out_root out/seg `
+  --remove_mouth 1 `
+  --margin_px 6 `
   --feather_px 1.5
 ```
 - **Input**: `--in_root` = Step 1 output with **one subfolder per image**.  
@@ -131,13 +131,13 @@ Script: `anonymization.py`
 
 Example:
 ```bash
-python anonymization.py \
-  --in_root out/face3d \
-  --images_root input \
-  --face_model ddfa_v3/assets/face_model.npy \
-  --out_root out/anon \
-  --alpha 1.0 \
-  --tex_size 2048 \
+python anonymization.py `
+  --in_root out/face3d `
+  --images_root input `
+  --face_model ddfa_v3/assets/face_model.npy `
+  --out_root out/anon `
+  --alpha 1.0 `
+  --tex_size 2048 `
   --keep_pose
 ```
 - **Input** (for each subfolder in `--in_root`):
@@ -163,12 +163,12 @@ Script: `renderer.py` (uses **PyTorch3D**).
 
 **A) Single .obj file**
 ```bash
-python renderer.py \
-  --obj out/anon/edo/edo.obj \
-  --out out/render/edo_front.png \
-  --img_size 1024 \
-  --margin 0.95 \
-  --bg_white 0 \
+python renderer.py `
+  --obj out/anon/edo/edo.obj `
+  --out out/render/edo_front.png `
+  --img_size 1024 `
+  --margin 0.95 `
+  --bg_white 0 `
   --device cpu
 ```
 - `--bg_white 1` saves **RGB** composited on white. With `0` you get **PNG RGBA**.
@@ -177,12 +177,12 @@ python renderer.py \
 
 **B) Batch over all subfolders**
 ```bash
-python renderer.py \
-  --in_root out/anon \
-  --out_root out/render \
-  --img_size 1024 \
-  --margin 0.95 \
-  --bg_white 0 \
+python renderer.py `
+  --in_root out/anon `
+  --out_root out/render `
+  --img_size 1024 `
+  --margin 0.95 `
+  --bg_white 0 `
   --device cpu
 ```
 - For each subfolder in `out/anon`, the script first looks for **`<subdir>/<subdir>.obj`**; if not found, it falls back to the **first `.obj`** in the folder.
