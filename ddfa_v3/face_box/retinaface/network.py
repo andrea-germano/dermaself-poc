@@ -66,7 +66,7 @@ class RetinaFace(nn.Module):
         super().__init__()
 
         if name == 'Resnet50':
-            backbone = models.resnet50(pretrained=pretrained)
+            backbone = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1 if pretrained else None)
         else:
             raise NotImplementedError(
                 f'Only Resnet50 backbone is supported but got {name}')
