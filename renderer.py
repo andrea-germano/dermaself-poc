@@ -125,7 +125,7 @@ def parse_args():
     return p.parse_args()
 
 
-def get_device(dev_str: str | None):
+def get_device(dev_str: str):
     if dev_str is None:
         return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     ds = dev_str.lower()
