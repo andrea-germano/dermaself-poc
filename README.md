@@ -133,7 +133,7 @@ Example:
 ```bash
 python anonymization.py `
   --in_root out/face3d `
-  --images_root input `
+  --images_root out/seg `
   --face_model ddfa_v3/assets/face_model.npy `
   --out_root out/anon `
   --alpha 1.0 `
